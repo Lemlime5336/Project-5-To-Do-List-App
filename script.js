@@ -1,5 +1,18 @@
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
+const completedCounter = document.getElementById("completed-counter");
+const incompleteCounter = document.getElementById("incomplete-counter")
+
+function updateCounters(){
+    //select all elements with the completed class, counted by .length
+    const completedTasks = document.querySelectorAll(".completed").length;
+    //select all list elements which do not have the completed class and count using .length
+    const incompleteTasks = document.querySelectorAll("li:not(.completed)").length;
+
+    //textContent updated the counters in the html file
+    completedCounter.textContent = completedTasks;
+    incompleteCounter.textContent = incompleteTasks;
+}
 
 function addTask(){
     const task = inputBox.value.trim();
@@ -39,5 +52,36 @@ function addTask(){
         //classList.toggle adds the completed class to the list item li
         //when the checkbox is checked, else removes the completed class
         li.classList.toggle("completed", checkbox.checked);
+        updateCounters();
+    });
+
+    //Edit button
+    //added event listener
+    editBtn.addEventListener("click", function(){
+        //prompt function displays dialog box asking for new task input,
+        //default value set to current content of taskSpan
+        const update = prompt("Edit task: ", taskSpan.textContent);
+        //check if user input new task
+        if (update !== null){
+            //if yes, updates textContent of taskSpan
+            taskSpan.textContent = update;
+            //if a completed task is edited will uncheck the task
+            li.classList.remove("completed");
+            //set checked to flase and update the counter
+            checkbox.checked = false;
+            updateCounters();
+        }
+    });
+
+    deleteBtn.addEventListener("click", function (){
+        //alert message for error handling
+        if (confirm("Are you sure you want to delete this task?")){
+            //if yes, deletes task using remove() method
+            li.remove();
+            //updates counter once removed
+            updateCounters();
+        }
     })
+    //update counters when a task is added
+    updateCounters();
 }
